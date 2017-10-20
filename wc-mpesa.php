@@ -14,7 +14,14 @@ Author URI: https://mauko.co.ke/
 */
 
 require_once( 'MPESA.php' );
-$mpesa = new \Safaricom\Mpesa\Mpesa( get_option( 'mpesa_key' ), get_option( 'mpesa_secret' ), true );
+$mpesa_options = get_option( 'woocommerce_mpesa_settings');
+if ( $mpesa_options['live'] == 'yes') {
+	$live = true;
+} else {
+	$live = false;
+}
+
+$mpesa = new \Safaricom\Mpesa\Mpesa( $mpesa_options['key'], $mpesa_options['secret'], $live );
 
 if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) return;
 
@@ -27,12 +34,62 @@ function wc_mpesa_add_to_gateways( $gateways ) {
 
 add_filter( 'woocommerce_payment_gateways', 'wc_mpesa_add_to_gateways' );
 
-function wc_mpesa_add_to_states( $states ) {
-	$states['KE'] = array();
-	return $states;
-}
+add_filter( 'woocommerce_states', 'custom_woocommerce_states' );
 
-//add_filter( 'woocommerce_countries', 'wc_mpesa_add_to_states' );
+function custom_woocommerce_states( $states ) {
+
+  $states['KE'] = array(
+	'BAR' => 'BARINGO',
+	'BMT' => 'BOMET',
+	'BGM' => 'BUNGOMA',
+	'BSA' => 'BUSIA',
+	'EGM' => 'ELGEYO/MARAKWET',
+	'EBU' => 'EMBU',
+	'GSA' => 'GARISSA',
+	'HMA' => 'HOMA BAY',
+	'ISL' => 'ISIOLO',
+	'KAJ' => 'KAJIADO',
+	'KAK' => 'KAKAMEGA',
+	'KCO' => 'KERICHO',
+	'KBU' => 'KIAMBU',
+	'KLF' => 'KILIFI',
+	'KIR' => 'KIRINYAGA',
+	'KSI' => 'KISII',
+	'KIS' => 'KISUMU',
+	'KTU' => 'KITUI',
+	'KLE' => 'KWALE',
+	'LKP' => 'LAIKIPIA',
+	'LAU' => 'LAMU',
+	'MCS' => 'MACHAKOS',
+	'MUE' => 'MAKUENI',
+	'MDA' => 'MANDERA',
+	'MAR' => 'MARSABIT',
+	'MRU' => 'MERU',
+	'MIG' => 'MIGORI',
+	'MBA' => 'MOMBASA',
+	'MRA' => 'MURANGA',
+	'NBO' => 'NAIROBI',
+	'NKU' => 'NAKURU',
+	'NDI' => 'NANDI',
+	'NRK' => 'NAROK',
+	'NYI' => 'NYAMIRA',
+	'NDR' => 'NYANDARUA',
+	'NER' => 'NYERI',
+	'SMB' => 'SAMBURU',
+	'SYA' => 'SIAYA',
+	'TVT' => 'TAITA TAVETA',
+	'TAN' => 'TANA RIVER',
+	'TNT' => 'THARAKA - NITHI',
+	'TRN' => 'TRANS NZOIA',
+	'TUR' => 'TURKANA',
+	'USG' => 'UASIN GISHU',
+	'VHG' => 'VIHIGA',
+	'WJR' => 'WAJIR',
+	'PKT' => 'WEST POKOT'
+  );
+
+  return $states;
+}
 
 function wc_mpesa_gateway_init() {
 
@@ -97,9 +154,9 @@ function wc_mpesa_gateway_init() {
 					'description' => '',
 					'default'     => 'no',
 				),
-				'sandbox' => array(
+				'live' => array(
 					'title'       => __( 'Enable/Disable', 'woocommerce' ),
-					'label'       => __( 'Sandbox Environment', 'woocommerce' ),
+					'label'       => __( 'Is Live Environment', 'woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'no',
@@ -122,7 +179,7 @@ function wc_mpesa_gateway_init() {
 					'title'       => __( 'Business Name', 'woocommerce' ),
 					'type'        => 'text',
 					'description' => __( 'Your MPESA Business Name.', 'woocommerce' ),
-					'default'     => __( 'Your Business Name', 'woocommerce' ),
+					'default'     => __( get_bloginfo( 'name' ), 'woocommerce' ),
 					'desc_tip'    => true,
 				),
 				'shortcode' => array(

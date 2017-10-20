@@ -19,7 +19,7 @@ class Mpesa
     /*
     * Sets the environment, true for live and false for sandbox
     */
-    public function __construct( $key, $secret, $live = true ){
+    public function __construct( $key, $secret, $live ){
         $this -> consumer_key = $key;
         $this -> consumer_secret = $secret;
         $this -> live = $live;
