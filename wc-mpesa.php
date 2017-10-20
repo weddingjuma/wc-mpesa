@@ -97,6 +97,13 @@ function wc_mpesa_gateway_init() {
 					'description' => '',
 					'default'     => 'no',
 				),
+				'sandbox' => array(
+					'title'       => __( 'Enable/Disable', 'woocommerce' ),
+					'label'       => __( 'Sandbox Environment', 'woocommerce' ),
+					'type'        => 'checkbox',
+					'description' => '',
+					'default'     => 'no',
+				),
 				'key' => array(
 					'title'       => __( 'App Key', 'woocommerce' ),
 					'type'        => 'text',
