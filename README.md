@@ -1,5 +1,6 @@
 # MPESA For WooCommerce
 WordPress Plugin that extends WooCommerce with MPESA Functionality for payments, transactions and balance checking.
+![alt text](https://user-images.githubusercontent.com/14233942/31839718-fefe17ca-b5ea-11e7-9afa-95fa395a8e43.png)
 
 # Installation
 * First, you need to download the latest release of the plugin from [here](https://github.com/maukoese/wc-mpesa/releases). Next, you need to go to WordPress admin area and visit Plugins » Add New page.
