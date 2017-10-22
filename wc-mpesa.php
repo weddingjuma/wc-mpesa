@@ -353,3 +353,51 @@ You will receive a confirmation message shortly thereafter.', 'woocommerce' ),
 		}
 	}
 }
+
+add_action('admin_init', 'mpesa_sampleoptions_init' );
+add_action('admin_menu', 'mpesa_sampleoptions_add_page');
+
+// Init plugin options to white list our options
+function mpesa_sampleoptions_init(){
+	register_setting( 'mpesa_sampleoptions_options', 'mpesa_sample', 'mpesa_sampleoptions_validate' );
+}
+
+// Add menu page
+function mpesa_sampleoptions_add_page() {
+	add_options_page('MPESA Inside', 'MPESA', 'manage_options', 'mpesa_sampleoptions', 'mpesa_sampleoptions_do_page');
+}
+
+// Draw the menu page itself
+function mpesa_sampleoptions_do_page() {
+	?>
+	<div class="wrap">
+		<h2>mpesa's Sample Options</h2>
+		<form method="post" action="options.php">
+			<?php settings_fields('mpesa_sampleoptions_options'); ?>
+			<?php $options = get_option('mpesa_sample'); ?>
+			<table class="form-table">
+				<tr valign="top"><th scope="row">A Checkbox</th>
+					<td><input name="mpesa_sample[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> /></td>
+				</tr>
+				<tr valign="top"><th scope="row">Some text</th>
+					<td><input type="text" name="mpesa_sample[sometext]" value="<?php echo $options['sometext']; ?>" /></td>
+				</tr>
+			</table>
+			<p class="submit">
+			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
+			</p>
+		</form>
+	</div>
+	<?php	
+}
+
+// Sanitize and validate input. Accepts an array, return a sanitized array.
+function mpesa_sampleoptions_validate($input) {
+	// Our first value is either 0 or 1
+	$input['option1'] = ( $input['option1'] == 1 ? 1 : 0 );
+	
+	// Say our second option must be safe text with no HTML tags
+	$input['sometext'] =  wp_filter_nohtml_kses($input['sometext']);
+	
+	return $input;
+}
